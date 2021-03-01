@@ -1,0 +1,149 @@
+//==========================================================
+//
+// Title:      Rental Rambos
+// Course:     CSC 1101
+// Lab Number: 11
+// Author: Jamil Ali
+// Date:   2/23/2021
+// Description:
+//    C++ console application that projects the finances for a four-unit rental property.
+//==========================================================
+#include <cstdlib> // For several general-purpose functions
+#include <fstream> // For file handling
+#include <iomanip> // For formatted output
+#include <iostream> // For cin, cout, and system
+#include <string> // For string data type
+using namespace std; // So "std::cout" may be abbreviated to "cout"
+
+int main()
+{
+	srand(time(NULL));
+	// constant variables declared
+	const int monthly_rent = 1000;
+	const int min_monthly_expense = 500;
+	const int max_monthly_expense = 2000;
+	// declared variables
+	double property_value;
+	double property_tax_rate;
+	double renters;
+	double months_to_project;
+
+	cout << "Welcome to Rental Rambos!" << endl;
+	cout << "--------------------------" << endl;
+
+	// This is where we enter the property value
+	cout << "Enter the property value in thousands (100-1,000): ";
+	cin >> property_value;
+	// this validation loop ensures that if the user inputs value less than 100
+	// or greater than 1000, they will receive an error
+	while (property_value < 100 || property_value > 1000) {
+		cout << "Error: the property value is not between 100 and 1,000." << endl;
+		cout << "Enter the property value in thousands (100-1,000): ";
+		cin >> property_value;
+	}
+
+	// Enter the property tax rate value
+	cout << "\nEnter the property tax rate (1-7%): ";
+	cin >> property_tax_rate;
+
+	// validation loop ensures that if the user inputs less than 1 or greater
+	// than 7, they will receieve an error message.
+	while (property_tax_rate < 1 || property_tax_rate >7) {
+		cout << "Error: the property tax rate is not between 1 and 7." << endl;
+		cout << "Enter the property tax rate (1-7%): ";
+		cin >> property_tax_rate;
+	}
+	// Enter the renters
+	cout << "\nEnter the number of renters (0-8): ";
+	cin >> renters;
+	// validation loop ensures that user inputs value between 0-8
+	while (renters < 0 || renters >8) {
+		cout << "Error: the number of renters is not between 0 and 8." << endl;
+		cout << "Enter the number of renters (0-8): ";
+		cin >> renters;
+	}
+	// do while loop
+	//
+	do {
+		cout << "\nEnter the number of months to project finances for (1-36):";
+		cin >> months_to_project;
+		if (months_to_project < 1 || months_to_project > 36)
+			cout << "Error: the number of months is not between 1 and 36." << endl;
+	} while (months_to_project < 1 || months_to_project>36);
+
+
+	cout << "\nProjection Parameters" << endl;
+	cout << "----------------------------------------------------------------------" << endl;
+	cout << setprecision(2) << fixed;
+	// here we set constant integers, and they are going to be designated and used for column widths
+	const int(col) = 25;
+	const int(col2) = 15;
+	cout << setw(col) << left << "Property value ($): " << setw(col2) << right << property_value * 1000 << endl; // I multiplied the property value by 1000
+	cout << setw(col) << left << "Property tax rate (%):" << setw(col2) << right << property_tax_rate << endl;
+	cout << setw(col) << left << "Renters: " << setw(col2) << right << renters << endl;
+	cout << setw(col) << left << "Months to project: " << setw(col2) << right << months_to_project << endl;
+
+
+	cout << "\nProjection" << endl;
+	cout << "------------------------------------------------------------------------------------------" << endl;
+	srand(time(NULL));
+	double income = renters * monthly_rent; // essentially this piece of code multiplies the renters and monthly rent is a const int of 1000.
+	  // so for example if the user 4 renters, this line of code will do 4*1000.
+	double tax = property_value * (property_tax_rate / 100) / 12;
+	int month = 1;
+	double total_income = 0; // necessary for while loop
+	double total_net = 0; // initialized to 0 for while loop
+	double totalTax = 0;
+	double totalExpense = 0;
+
+	// creating the headers for these rows
+	cout << setw(col) << left << "Month" << setw(col2) << right << "Income ($)" << setw(col2) << right
+		<< "Expenses ($)" << setw(col2) << right << "Tax ($)" << setw(col2) << right << "Net($)";
+
+	// this portion of the while loop states that while the months are less than or equal to 12,
+	// we will add 1 to months. We declared month as 1 ahead of the while loop,
+	// thus now what we the loop is doing is added 1 to months until it reaches 12. so it does
+	// 1+1, which is 2, then it does 2+1, which is 3, and it does this until it reaches 12.
+	while (month <= 12) {
+		cout << endl;
+		cout << setw(col) << left << month; // this new line allows for the months to be  printed out nicely
+
+		month = month + 1;
+
+
+		// this is the update for the while loop, and it adds 1 to month. Month is declared as 1.
+		// so essentially this says , while month is <= 12, we will add 1 to month.
+
+		double Expenses = (rand() % (max_monthly_expense - min_monthly_expense + 1)) + min_monthly_expense; // these are variables localized & initialized within the while loop,
+		// so once we leave it, these variables will no longer be declared.
+		double Net = income - Expenses - tax;
+
+		/*
+		cout << setw(col) << left << "Month" << setw(col2) << left << "Income ($)" << setw(col2) << left
+		<< "Expenses ($)" << setw(col2) << left << "Tax ($)" << setw(col2) << left << "Net($)";
+		*/
+
+		cout << setw(col2) << right << income;
+		cout << setw(col2) << right << Expenses;
+		cout << setw(col2) << right << tax;
+		cout << setprecision(2) << fixed << setw(col2) << right << Net;
+
+
+		total_income = total_income + income; // total_income declared as 0, so it is doing  0+ income listed per month. So if week 1 has 4k, it will do 0+ 4k, and if week 2 was 4k, it will do
+		 // 4k+4k/.
+		total_net = total_net + Net;
+		totalTax = totalTax + tax;
+		totalExpense = totalExpense + Expenses;
+	}
+	cout << "\n------------------------------------------------------------------------------------------" << endl;
+
+
+	cout << setw(col) << left << "Totals";
+	cout << setw(col2) << right << total_income;
+	cout << setw(col2) << right << total_net;
+	cout << setw(col2) << right << totalTax;
+	cout << setw(col2) << right << totalExpense << endl;
+
+	// End of Application
+	cout << "\nEnd of Rental Rambos";
+}
